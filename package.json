@@ -1,0 +1,14 @@
+{
+  "name": "haar-cascade-visualizer-js",
+  "version": "0.0.1",
+  "description": "JS port of Adam Harvey's Processing Haar Cascade Visualizer\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js --open --live --css styles.css"
+  },
+  "author": "Andy Dayton <amdayton@gmail.com> (http://andydayton.com/)",
+  "license": "ISC",
+  "dependencies": {
+    "p5": "^0.4.22"
+  }
+}

@@ -4,6 +4,7 @@ var p5 = require('p5')
 
 var canvas;
 var img;
+var _data;
 
 var sketch = function(p) {
 
@@ -15,16 +16,64 @@ var sketch = function(p) {
 	p.setup = function() {
 		canvas = p.createCanvas(600, 600);
 
-		p.loadXML('data/haarcascade_frontalface_default.xml', parseHaarCascade);
+		p.loadXML('data/haarcascade_frontalface_default.xml', xmlLoaded);
 
 	}
 
 	p.draw = function() {
 		p.background(0);
 		p.image(img, 0, 0, p.width, p.height);
+	
+		if(_data) {
+			_data.stages.forEach(function(trees, i) {
+
+				trees.forEach(function(nodes, j) {
+
+					nodes.forEach(function(node, k) {
+						drawHaarRects(node, _data.sampleSize);
+					});
+
+				});
+
+			});
+		}	
+
+	}
+
+
+	function xmlLoaded(data) {
+		_data = parseHaarCascade(data);
+	}
+
+	function drawHaarRects(node, sampleSize) {
+		p.noStroke();
+
+		node.rects.forEach(function(r) {
+			var weight = r[4];
+			// black or white based on weight
+		 
+			// console.log('weight', weight);
+
+			var c = p.color(255, 255, 255, 100); 
+
+			if(weight < 0) {
+				c = p.color(0, 0, 0, 100);
+			}
+
+			var x = p.map(r[0], 0, sampleSize[0], 0, p.width);
+			var y = p.map(r[1], 0, sampleSize[1], 0, p.height);
+			var w = p.map(r[2], 0, sampleSize[0], 0, p.width);
+			var h = p.map(r[3], 0, sampleSize[1], 0, p.height);
+
+			p.fill(c);
+			p.rect(x, y, w, h);
+
+		});
 	}
 
 }
+
+
 
 function err() {
 	throw new Error('Error!', arguments);

@@ -1,33 +1,46 @@
 module.exports = function parseHaarCascade(data) {
+	var stages = []
+		// iterators
+		, i, j, k
+		, trees
+		, nodes;
+
+
 	var root = data.querySelector('haarcascade_frontalface_default');
-	var size = root.querySelector('size').innerHTML.split(' ');
+	var size = root.querySelector('size').innerHTML
+								.split(' ')
+								.map(function(d) { return parseInt(d); });
+
 
 	// returns type HTMLCollection
-	var stages = root.querySelector('stages').children;
+	var stageEls = root.querySelector('stages').children;
 
-	var i;
-	for(i = 0; i < stages.length; i++) {
-		var trees = stages[i].querySelector('trees').children;
+	// iterate through stages
+	for(i = 0; i < stageEls.length; i++) {
+		var treeEls = stageEls[i].querySelector('trees').children;
+		trees = [];
 
-		var j;
-		for(j = 0; j < trees.length; j++) {
-			var nodes = trees[j].children;
+		// iterate through trees
+		for(j = 0; j < treeEls.length; j++) {
+			var nodeEls = treeEls[j].children;
+			nodes = [];
 
-			var k;
-			for(k = 0; k < nodes.length; k++) {
-				var node = parseHaarNode(nodes[k]);
-
-				console.log('node', node);
-				// console.log('node', rects, tilted, threshold, left_val, right_val);
-
+			// iterate through nodes
+			for(k = 0; k < nodeEls.length; k++) {
+				var node = parseHaarNode(nodeEls[k]);
+				nodes.push(node);
 			}
 
+			trees.push(nodes);
 		}
-
+		stages.push(trees)
 	}
 
 
-	// console.log(root, size, stages);
+	return {
+		sampleSize: size
+		, stages: stages
+	}
 
 }
 

@@ -1,17 +1,31 @@
 var p5 = require('p5')
+	, dat = require('exdat')
 	, parseHaarCascade = require('./parseHaarCascade.js');
+
+var images = {
+	'Average Female' : 'data/female-averaged-cropped.jpg'
+	, 'Average Male' : 'data/male-averaged-cropped.jpg'
+}
+
+var params = {
+	showImage: true
+	, showGrid: true
+	, haarOverlay: true
+	, haarOpacity: 0.5
+	, currentNode: 0
+}
 
 
 var canvas;
 var img;
+var gui;
 var _data;
-var stage = 0;
 
 var sketch = function(p) {
 
 
 	p.preload = function() {
-		img = p.loadImage('data/female-averaged-cropped.jpg');
+		img = p.loadImage(images['Average Female']);
 	}
 
 	p.setup = function() {
@@ -19,25 +33,42 @@ var sketch = function(p) {
 
 		p.loadXML('data/haarcascade_frontalface_default.xml', xmlLoaded);
 
+		gui = new dat.GUI();
+
+		gui.add(params, 'showImage');
+		gui.add(params, 'showGrid');
+		gui.add(params, 'haarOverlay');
+		gui.add(params, 'haarOpacity', 0.0, 1.0);
+
 	}
 
 	p.draw = function() {
-		p.background(0);
-		p.image(img, 0, 0, p.width, p.height);
+		p.background(200);
+
+		if(params.showImage) {
+			p.image(img, 0, 0, p.width, p.height);
+		}
 
 		if(_data && _data.flattened) {
 
-			drawGrid(_data.sampleSize[0], _data.sampleSize[1]);
-
+			if(params.showGrid) {
+				drawGrid(_data.sampleSize[0], _data.sampleSize[1]);
+			}
 
 			var nodes = _data.flattened;
-			for(var i = 0; (i < stage && i < nodes.length); i++) {
-				drawHaarRects(nodes[i], _data.sampleSize);
+
+			if(params.haarOverlay) {
+				// draw all haar shapes up to current
+				for(var i = 0; (i < params.currentNode && i < nodes.length); i++) {
+					drawHaarRects(nodes[i], _data.sampleSize);
+				}
+			} else {
+				drawHaarRects(nodes[params.currentNode], _data.sampleSize);
 			}
 		}
 
 		p.keyReleased = function() {
-			stage++;
+			params.currentNode++;
 		}
 
 	}
@@ -54,6 +85,8 @@ var sketch = function(p) {
 				});
 			});
 		});
+
+		gui.add(params, 'currentNode', 0, _data.flattened.length-1).listen();
 
 		console.log('xmlLoaded', _data);
 	}
@@ -89,11 +122,13 @@ var sketch = function(p) {
 			// black or white based on weight
 		 
 			// console.log('weight', weight);
+			
+			var opacity = Math.floor(params.haarOpacity*255);
 
-			var c = p.color(255, 255, 255, 100); 
+			var c = p.color(255, 255, 255, opacity); 
 
 			if(weight < 0) {
-				c = p.color(0, 0, 0, 100);
+				c = p.color(0, 0, 0, opacity);
 			}
 
 			var x = p.map(r[0], 0, sampleSize[0], 0, p.width);

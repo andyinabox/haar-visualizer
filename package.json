@@ -9,6 +9,7 @@
   "author": "Andy Dayton <amdayton@gmail.com> (http://andydayton.com/)",
   "license": "ISC",
   "dependencies": {
+    "exdat": "^0.6.2",
     "p5": "^0.4.22"
   }
 }

@@ -13,6 +13,7 @@ var params = {
 	, haarOverlay: true
 	, haarOpacity: 0.5
 	, currentNode: 0
+	, currentImage: images['Average Female']
 }
 
 
@@ -25,7 +26,7 @@ var sketch = function(p) {
 
 
 	p.preload = function() {
-		img = p.loadImage(images['Average Female']);
+		img = p.loadImage(params.currentImage);
 	}
 
 	p.setup = function() {
@@ -35,11 +36,13 @@ var sketch = function(p) {
 
 		gui = new dat.GUI();
 
+		gui.add(params, 'currentImage', images).onChange(function(path) {
+			img = p.loadImage(path)
+		});
 		gui.add(params, 'showImage');
 		gui.add(params, 'showGrid');
 		gui.add(params, 'haarOverlay');
 		gui.add(params, 'haarOpacity', 0.0, 1.0);
-
 	}
 
 	p.draw = function() {

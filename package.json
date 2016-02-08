@@ -1,7 +1,7 @@
 {
-  "name": "haar-cascade-visualizer-js",
-  "version": "0.0.1",
-  "description": "JS port of Adam Harvey's Processing Haar Cascade Visualizer\"",
+  "name": "haar-visualizer",
+  "version": "0.0.2",
+  "description": "Visualizing Haar cascades used for facial recognition in OpenCV",
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --open --live --css styles.css"

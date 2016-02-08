@@ -24,8 +24,12 @@ var sketch = function(p) {
 	p.draw = function() {
 		p.background(0);
 		p.image(img, 0, 0, p.width, p.height);
-	
+
 		if(_data && _data.flattened) {
+
+			drawGrid(_data.sampleSize[0], _data.sampleSize[1]);
+
+
 			var nodes = _data.flattened;
 			for(var i = 0; (i < stage && i < nodes.length); i++) {
 				drawHaarRects(nodes[i], _data.sampleSize);
@@ -53,6 +57,28 @@ var sketch = function(p) {
 
 		console.log('xmlLoaded', _data);
 	}
+
+	function drawGrid(w, h, lineColor) {
+		var i, j;
+		var horizSpace = p.floor(p.width/w);
+		var vertSpace = p.floor(p.height/h);
+		var c = lineColor || p.color(100);
+
+		p.push();
+			p.stroke(c);
+
+			// vertical lines
+			for(i = 1; i < w; i++) {
+				p.line(i*horizSpace, 0, i*horizSpace, p.height);
+			}
+
+			// horizontal lines
+			for(j = 1; j < h; j++) {
+				p.line(0, j*vertSpace, p.width, j*vertSpace);
+			}	
+		p.pop();
+	}
+
 
 	function drawHaarRects(node, sampleSize) {
 

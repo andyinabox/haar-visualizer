@@ -12,7 +12,7 @@ var params = {
 	, showGrid: true
 	, haarOverlay: true
 	, haarOpacity: 0.5
-	, currentNode: 0
+	, currentNode: -1
 	, currentImage: images['Average Female']
 }
 
@@ -62,7 +62,7 @@ var sketch = function(p) {
 
 			if(params.haarOverlay) {
 				// draw all haar shapes up to current
-				for(var i = 0; (i < params.currentNode && i < nodes.length); i++) {
+				for(var i = 0; (i <= params.currentNode && i < nodes.length); i++) {
 					drawHaarRects(nodes[i], _data.sampleSize);
 				}
 			} else {
@@ -70,8 +70,14 @@ var sketch = function(p) {
 			}
 		}
 
-		p.keyReleased = function() {
-			params.currentNode++;
+		p.keyTyped = function() {
+			if(p.key === '.') {
+ 				params.currentNode++;
+			}
+
+			if(p.key === ',') {
+ 				params.currentNode--;
+			}
 		}
 
 	}

@@ -6,10 +6,14 @@
   "scripts": {
     "start": "budo index.js --open --live --css styles.css"
   },
+  "repository": "https://github.com/andyinabox/haar-visualizer.git",
   "author": "Andy Dayton <amdayton@gmail.com> (http://andydayton.com/)",
   "license": "ISC",
   "dependencies": {
     "exdat": "^0.6.2",
     "p5": "^0.4.22"
+  },
+  "devDependencies": {
+    "budo": "^8.0.4"
   }
 }

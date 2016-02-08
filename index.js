@@ -5,6 +5,7 @@ var p5 = require('p5')
 var canvas;
 var img;
 var _data;
+var stage = 0;
 
 var sketch = function(p) {
 
@@ -24,28 +25,37 @@ var sketch = function(p) {
 		p.background(0);
 		p.image(img, 0, 0, p.width, p.height);
 	
-		if(_data) {
-			_data.stages.forEach(function(trees, i) {
+		if(_data && _data.flattened) {
+			var nodes = _data.flattened;
+			for(var i = 0; (i < stage && i < nodes.length); i++) {
+				drawHaarRects(nodes[i], _data.sampleSize);
+			}
+		}
 
-				trees.forEach(function(nodes, j) {
-
-					nodes.forEach(function(node, k) {
-						drawHaarRects(node, _data.sampleSize);
-					});
-
-				});
-
-			});
-		}	
+		p.keyReleased = function() {
+			stage++;
+		}
 
 	}
 
 
 	function xmlLoaded(data) {
 		_data = parseHaarCascade(data);
+		_data.flattened = [];
+
+		_data.stages.forEach(function(trees) {
+			trees.forEach(function(nodes, j) {
+				nodes.forEach(function(node, k) {
+					_data.flattened.push(node);
+				});
+			});
+		});
+
+		console.log('xmlLoaded', _data);
 	}
 
 	function drawHaarRects(node, sampleSize) {
+
 		p.noStroke();
 
 		node.rects.forEach(function(r) {

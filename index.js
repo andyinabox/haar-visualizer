@@ -12,7 +12,8 @@ var params = {
 	, showGrid: true
 	, haarOverlay: true
 	, haarOpacity: 0.5
-	, currentNode: -1
+	, currentStage: 0
+	, currentTree: 0
 	, currentImage: images['Average Female']
 }
 
@@ -52,50 +53,75 @@ var sketch = function(p) {
 			p.image(img, 0, 0, p.width, p.height);
 		}
 
-		if(_data && _data.flattened) {
+		if(_data) {
 
 			if(params.showGrid) {
 				drawGrid(_data.sampleSize[0], _data.sampleSize[1]);
 			}
 
-			var nodes = _data.flattened;
+			// var nodes = _data.flattened;
 
 			if(params.haarOverlay) {
 				// draw all haar shapes up to current
-				for(var i = 0; (i <= params.currentNode && i < nodes.length); i++) {
-					drawHaarRects(nodes[i], _data.sampleSize);
+				for(var i = 0; i <= params.currentStage; i++) {
+					drawTreesInStage(_data.stages[i], 0, params.currentTree)
 				}
 			} else {
-				drawHaarRects(nodes[params.currentNode], _data.sampleSize);
+				drawTreesInStage(_data.stages[params.currentStage], params.currentTree-1, params.currentTree)
 			}
 		}
 
 		p.keyTyped = function() {
-			if(p.key === '.') {
- 				params.currentNode++;
-			}
+			// if(p.key === '.') {
+ 		// 		params.currentNode++;
+			// }
 
-			if(p.key === ',') {
- 				params.currentNode--;
-			}
+			// if(p.key === ',') {
+ 		// 		params.currentNode--;
+			// }
 		}
 
 	}
 
 
+	function drawTreesInStage(stage, min, max) {
+		stage.forEach(function(tree, i) {
+			if(i >= min && i < max) {
+				drawNodesInTree(tree);
+			}
+		});
+	}
+
+	function drawNodesInTree(tree) {
+		tree.forEach(function(node, i) {
+			drawHaarRects(node);
+		});
+	}
+
+
 	function xmlLoaded(data) {
 		_data = parseHaarCascade(data);
-		_data.flattened = [];
+		// _data.flattened = [];
 
-		_data.stages.forEach(function(trees) {
-			trees.forEach(function(nodes, j) {
-				nodes.forEach(function(node, k) {
-					_data.flattened.push(node);
-				});
-			});
+		// _data.stages.forEach(function(trees) {
+		// 	trees.forEach(function(nodes, j) {
+		// 		nodes.forEach(function(node, k) {
+		// 			_data.flattened.push(node);
+		// 		});
+		// 	});
+		// });
+
+
+		var stageController = gui.add(params, 'currentStage', 0, _data.stages.length-1);
+		var treeController = gui.add(params, 'currentTree', 0, _data.stages[params.currentStage].length-1);
+		stageController.step(1).listen();
+		treeController.step(1).listen();
+
+		stageController.onChange(function(s){
+			params.currentTree = 0;
+			treeController.max(_data.stages[s].length-1);
 		});
-
-		gui.add(params, 'currentNode', 0, _data.flattened.length-1).listen();
+		
 
 		console.log('xmlLoaded', _data);
 	}
@@ -123,6 +149,8 @@ var sketch = function(p) {
 
 
 	function drawHaarRects(node, sampleSize) {
+
+		sampleSize = sampleSize || _data.sampleSize;
 
 		p.noStroke();
 

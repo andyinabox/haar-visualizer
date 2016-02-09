@@ -4,7 +4,10 @@
   "description": "Visualizing Haar cascades used for facial recognition in OpenCV",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --open --live --css styles.css"
+    "start": "budo index.js --open --live --css styles.css",
+    "build": "mkdir -p dist; cp -r data dist/data; node html.js > dist/index.html; browserify index.js | uglifyjs -m > dist/bundle.js; uglifycss styles.css > dist/styles.css",
+    "publish": "npm run build; gh-pages -d dist; npm run clean",
+    "clean": "rm -r dist"
   },
   "repository": "https://github.com/andyinabox/haar-visualizer.git",
   "author": "Andy Dayton <amdayton@gmail.com> (http://andydayton.com/)",
@@ -14,6 +17,11 @@
     "p5": "^0.4.22"
   },
   "devDependencies": {
-    "budo": "^8.0.4"
+    "browserify": "^13.0.0",
+    "budo": "^8.0.4",
+    "gh-pages": "^0.9.0",
+    "simple-html-index": "^1.1.2",
+    "uglifycss": "0.0.20",
+    "uglifyjs": "^2.4.10"
   }
 }

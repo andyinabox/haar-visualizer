@@ -11,7 +11,8 @@ var images = {
 var params = {
 	showImage: true
 	, showGrid: true
-	, haarOverlay: true
+	, overlayStageFeatures: true
+	, overlayStages: false
 	, haarOpacity: 0.5
 	, currentStage: 0
 	, currentTree: 0
@@ -43,7 +44,8 @@ var sketch = function(p) {
 		});
 		gui.add(params, 'showImage');
 		gui.add(params, 'showGrid');
-		gui.add(params, 'haarOverlay');
+		gui.add(params, 'overlayStageFeatures');
+		gui.add(params, 'overlayStages');
 		gui.add(params, 'haarOpacity', 0.0, 1.0);
 	}
 
@@ -62,9 +64,10 @@ var sketch = function(p) {
 
 			// var nodes = _data.flattened;
 
-			if(params.haarOverlay) {
+			if(params.overlayStageFeatures) {
 				// draw all haar shapes up to current
-				for(var i = 0; i <= params.currentStage; i++) {
+				var start = params.overlayStages ? 0 : params.currentStage;
+				for(var i = start; i <= params.currentStage; i++) {
 					drawTreesInStage(_data.stages[i], 0, params.currentTree)
 				}
 			} else {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --open --live --css styles.css",
-    "build": "mkdir -p dist; cp -r data dist/data; node html.js > dist/index.html; browserify index.js | uglifyjs -m > dist/bundle.js; uglifycss styles.css > dist/styles.css",
+    "build": "budo-demo index.js -c styles.css -i data",
     "publish": "npm run build; gh-pages -d dist; npm run clean",
     "clean": "rm -r dist"
   },
@@ -17,11 +17,9 @@
     "p5": "^0.4.22"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
     "budo": "^8.0.4",
+    "budo-demo": "andyinabox/budo-demo#v0.0.3",
     "gh-pages": "^0.9.0",
-    "simple-html-index": "^1.1.2",
-    "uglifycss": "0.0.20",
-    "uglifyjs": "^2.4.10"
+    "uglifyify": "^3.0.1"
   }
 }

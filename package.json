@@ -1,6 +1,6 @@
 {
   "name": "haar-visualizer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Visualizing Haar cascades used for facial recognition in OpenCV",
   "main": "index.js",
   "scripts": {
